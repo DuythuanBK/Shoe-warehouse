@@ -1,0 +1,217 @@
+<div class="da-list-wrap">
+  <da-layout-row [daGutter]="[24, 24]">
+    <da-col-item [daSpan]="24" [daXs]="24">
+      <div class="da-list-container" dLoading [loading]="busy">
+        <div class="da-list-content">
+          <d-button id="primaryBtn" style="margin-left: 15px" *ngIf="!headerNewForm" (click)="newRow()" class="cursor-pointer">Create new data</d-button>
+          <d-row [dGutter]="12" style="margin-top: 10px; margin-left: 10px;" *ngIf="!headerNewForm">
+            <d-col [dSpan]="4">
+              <input class="content-box" id="phoneNumberSearch" dTextInput placeholder="Số điện thoại" [(ngModel)]="phoneNumberSearch"/>
+            </d-col>
+            <d-col [dSpan]="4">
+              <input class="content-box" id="customerNameSearch" dTextInput placeholder="Tên khách hàng" [(ngModel)]="customerNameSearch"/>
+            </d-col>
+            <d-col [dSpan]="4">
+              <input class="content-box" id="productCodeSearch" dTextInput placeholder="Mã sản phẩm" [(ngModel)]="productCodeSearch"/>
+            </d-col>
+            <d-col [dSpan]="4">
+              <d-select id="statusSearch" class="content-box" placeholder="trạng thái" [options]="statusOptions" size="sm" [(ngModel)]="statusSearch"></d-select>
+            </d-col>
+            <d-button class="content-box" id="primaryBtn" (click)="onSearch()" class="cursor-pointer">Search</d-button>
+            <d-button class="content-box" id="primaryBtn" (click)="onClearSearch()" class="cursor-pointer">Clear</d-button>
+          </d-row>
+          <div *ngIf="headerNewForm" class="edit-padding-fix">
+            <da-admin-form
+              [formConfig]="formConfig"
+              [formData]="defaultRowData"
+              class="editable-row"
+              (submitted)="quickRowAdded($event)"
+              (canceled)="quickRowCancel()"
+            ></da-admin-form>
+          </div>
+          <d-data-table
+            #dataTable
+            [dataSource]="listData"
+            [scrollable]="true"
+            [maxHeight]="'700px'" 
+            [tableWidthConfig]="tableWidthConfig"
+          >
+            <thead dTableHead>
+              <tr dTableRow>
+                <th dHeadCell>Phone number</th>
+                <th dHeadCell>Customer name</th>
+                <th dHeadCell>Address</th>
+                <th dHeadCell>Product code</th>
+                <th dHeadCell>Quantity</th>
+                <th dHeadCell>Weight</th>
+                <th dHeadCell>Price</th>
+                <th dHeadCell>Ship time</th>
+                <th dHeadCell>Ship service</th>
+                <th dHeadCell>Status</th>
+                <th dHeadCell>Note</th>
+                <th dHeadCell>Actions</th>
+              </tr>
+            </thead>
+            <tbody dTableBody>
+              <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+                <tr dTableRow>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'phoneNumber'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.customer.phoneNumber }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'name'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.customer.name }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'address'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.customer.address }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'productCode'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.productCode }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'quantity'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.quantity }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'weight'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.weight }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'price'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.price }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'shipTime'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.shipTime }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'shipService'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.shipService }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'status'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.status }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'note'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.note }}</span>
+                  </td>
+                  <td>
+                    <d-button
+                      icon="icon-edit"
+                      bsStyle="text-dark"
+                      title="edit"
+                      (click)="editRow(rowIndex)"
+                    ></d-button>
+                    <d-button
+                      icon="icon-delete"
+                      bsStyle="text-dark"
+                      title="delete"
+                      (click)="deleteRow(rowIndex)"
+                    ></d-button>
+                
+                  </td>
+                </tr>
+              </ng-template>
+            </tbody>
+          </d-data-table>
+        </div>
+        <div class="da-list-footer">
+          <d-pagination
+            [size]="'sm'"
+            [total]="pager.total"
+            [(pageSize)]="pager.pageSize"
+            [(pageIndex)]="pager.pageIndex"
+            [canViewTotal]="true"
+            [canChangePageSize]="true"
+            [canJumpPage]="true"
+            [maxItems]="5"
+            (pageIndexChange)="onPageChange($event)"
+            (pageSizeChange)="onSizeChange($event)"
+          >
+          </d-pagination>
+        </div>
+      </div>
+    </da-col-item>
+  </da-layout-row>
+</div>

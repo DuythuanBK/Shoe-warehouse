@@ -1,0 +1,213 @@
+<div class="da-list-wrap">
+  <da-layout-row [daGutter]="[24, 24]">
+    <da-col-item [daSpan]="24" [daXs]="24">
+      <div class="da-list-container" dLoading [loading]="busy">
+        <div class="da-list-content">
+          <d-button id="primaryBtn" style="margin-left: 15px" *ngIf="!headerNewForm" (click)="newRow()" class="cursor-pointer">Create new data</d-button>
+          <d-row [dGutter]="12" style="margin-top: 10px; margin-left: 10px;" *ngIf="!headerNewForm">
+            <d-col [dSpan]="4">
+              <input class="content-box" id="shipCodeSearch" dTextInput placeholder="Mã vận đơn" [(ngModel)]="shipCodeSearch"/>
+            </d-col>
+            <d-col [dSpan]="4">
+              <input class="content-box" id="orderCodeSearch" dTextInput placeholder="Mã đơn hàng" [(ngModel)]="orderCodeSearch"/>
+            </d-col>
+            <d-col class="devui-input-group devui-dropdown-origin" [dSpan]="4">
+                <input
+                  class="devui-input devui-form-control content-box"
+                  placeholder="dd//MM/yyyy"
+                  [dateFormat]='"dd/MM/yyyy"'
+                  (click)="datePicker1.toggle()"
+                  [name]="dateSearch"
+                  [(ngModel)]="dateSearch"
+                  autocomplete="off"
+                  dDatepicker
+                  appendToBody
+                  #datePicker1="datepicker"
+                />
+                <div class="devui-input-group-addon close-icon-wrapper" (click)="datePicker1.clearAll(); onDatePickerClearAll()">
+                  <i class="icon icon-close"></i>
+                </div>
+                <div class="devui-input-group-addon" (click)="datePicker1.toggle()">
+                  <i class="icon icon-calendar"></i>
+              </div>
+            </d-col>
+            <d-col [dSpan]="4">
+              <input class="content-box" id="productCodeSearch" dTextInput placeholder="Mã sản phẩm" [(ngModel)]="productCodeSearch"/>
+            </d-col>
+            <d-col [dSpan]="4">
+              <d-select id="statusSearch" class="content-box" placeholder="trạng thái" [options]="statusOptions" size="sm" [(ngModel)]="statusSearch"></d-select>
+            </d-col>
+            <d-button class="content-box" id="primaryBtn" (click)="onSearch()" class="cursor-pointer">Search</d-button>
+            <d-button class="content-box" id="primaryBtn" (click)="onClearSearch()" class="cursor-pointer">Clear</d-button>
+          </d-row>
+          <div *ngIf="headerNewForm" class="edit-padding-fix">
+            <da-admin-form
+              [formConfig]="formConfig"
+              [formData]="defaultRowData"
+              class="editable-row"
+              (submitted)="quickRowAdded($event)"
+              (canceled)="quickRowCancel()"
+            ></da-admin-form>
+          </div>
+          <d-data-table
+            #dataTable
+            [dataSource]="listData"
+            [scrollable]="true"
+            [maxHeight]="'700px'" 
+            [tableWidthConfig]="tableWidthConfig"
+          >
+            <thead dTableHead>
+              <tr dTableRow>
+                <th dHeadCell>Ship code</th>
+                <th dHeadCell>Order code</th>
+                <th dHeadCell>Import date</th>
+                <th dHeadCell>Product code</th>
+                <th dHeadCell>Quantity</th>
+                <th dHeadCell>Price</th>
+                <th dHeadCell>Ship Fee</th>
+                <th dHeadCell>Status</th>
+                <th dHeadCell>Note</th>
+                <th dHeadCell>Actions</th>
+              </tr>
+            </thead>
+            <tbody dTableBody>
+              <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+                <tr dTableRow>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'shipCode'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.shipCode }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'orderCode'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.orderCode }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'importDate'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{rowItem?.importDate}}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'productCode'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.productCode }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'quantity'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.quantity }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'price'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.price }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'shipFee'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.shipFee }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'status'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.status }}</span>
+                  </td>
+                  <td
+                    dTableCell
+                    [editable]="false"
+                    [editableTip]="editableTip"
+                    [rowItem]="rowItem"
+                    [field]="'note'"
+                    [beforeEditStart]="beforeEditStart"
+                    [beforeEditEnd]="beforeEditEnd"
+                  >
+                    <span>{{ rowItem?.note }}</span>
+                  </td>
+                  <td>
+                    <d-button
+                      icon="icon-edit"
+                      bsStyle="text-dark"
+                      title="edit"
+                      (click)="editRow(rowIndex)"
+                    ></d-button>
+                    <d-button
+                      icon="icon-delete"
+                      bsStyle="text-dark"
+                      title="delete"
+                      (click)="deleteRow(rowIndex)"
+                    ></d-button>
+                
+                  </td>
+                </tr>
+              </ng-template>
+            </tbody>
+          </d-data-table>
+        </div>
+        <div class="da-list-footer">
+          <d-pagination
+            [size]="'sm'"
+            [total]="pager.total"
+            [(pageSize)]="pager.pageSize"
+            [(pageIndex)]="pager.pageIndex"
+            [canViewTotal]="true"
+            [canChangePageSize]="true"
+            [canJumpPage]="true"
+            [maxItems]="5"
+            (pageIndexChange)="onPageChange($event)"
+            (pageSizeChange)="onSizeChange($event)"
+          >
+          </d-pagination>
+        </div>
+      </div>
+    </da-col-item>
+  </da-layout-row>
+</div>

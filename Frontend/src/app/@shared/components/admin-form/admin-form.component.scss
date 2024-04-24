@@ -1,0 +1,17 @@
+.da-form-operation.devui-form-operation {
+  margin-left: 115px !important;
+}
+
+@media only screen and (max-width: 1023px) {
+  .da-form-operation.devui-form-operation {
+    margin-left: 0 !important;
+  }
+}
+
+
+.truncated-input {
+  width: 150px; /* Set your desired width */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

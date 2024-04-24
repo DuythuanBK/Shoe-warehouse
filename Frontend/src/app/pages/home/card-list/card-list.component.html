@@ -1,0 +1,45 @@
+<div class="da-list-wrap">
+  <da-layout-row [daGutter]="[24, 24]">
+    <da-col-item [daSpan]="24" [daXs]="24">
+      <div class="da-list-container">
+        <div class="da-list-header">
+          <d-search
+            [placeholder]="'search'"
+            [(ngModel)]="keyword"
+            (searchFn)="getList()"
+          ></d-search>
+        </div>
+
+        <div class="da-list-content" dLoading [loading]="busy">
+          <d-card *ngFor="let item of listData" class="card-item">
+            <d-card-header>
+              <d-card-title class="large-text">{{ item.code }}</d-card-title>
+              <d-card-title><span>Kho: {{item.stockQuantity}}</span> <span style="margin-left: 100px;">Đang nhập: {{item.importQuantity}}</span></d-card-title>
+              
+            </d-card-header>
+            <d-card-content style="max-height: 500px; max-width: 300px">
+              <img src="{{imageSrc}}/{{item.image}}" style="object-fit: contain; max-height: 500px; max-width: 300px">
+            </d-card-content>
+          </d-card>
+        </div>
+
+        <div class="da-list-footer">
+          <d-pagination
+            [size]="'sm'"
+            [total]="pager.total"
+            [(pageSize)]="pager.pageSize"
+            [(pageIndex)]="pager.pageIndex"
+            [canViewTotal]="true"
+            [canChangePageSize]="true"
+            [canJumpPage]="true"
+            [maxItems]="5"
+            [pageSizeOptions]="pageSizeOptions"
+            (pageIndexChange)="onPageChange($event)"
+            (pageSizeChange)="onSizeChange($event)"
+          >
+          </d-pagination>
+        </div>
+      </div>
+    </da-col-item>
+  </da-layout-row>
+</div>
