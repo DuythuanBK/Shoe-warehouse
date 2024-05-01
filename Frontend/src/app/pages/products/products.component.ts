@@ -112,6 +112,9 @@ export class ProductsComponent {
     this.isEdit = false;
     this.headerNewForm = true;
   }
+  exportProducts() {
+    this.productService.exportProducts();
+  }
 
   quickRowAdded(e) {
     const newProduct: Product = { ...e };

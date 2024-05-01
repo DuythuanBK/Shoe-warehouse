@@ -1,6 +1,6 @@
 import { DialogService } from 'ng-devui';
 
-export const BACKEND_URL = 'http://localhost:8081/warehouse';
+export const BACKEND_URL = 'http://localhost:8080/api';
 
 export function showDialogError(error: string, dialogService: DialogService) {
   const results = dialogService.open({

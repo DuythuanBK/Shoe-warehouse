@@ -20,7 +20,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     @Query( value = "select p.id, p.code, p.image, p.note from product p join \n" +
             "(select p.code from product p\n" +
-            "          left join import i on p.code = i.product_code\n" +
+            "          left join imports i on p.code = i.product_code\n" +
             "          left join stock s on p.code = s.product_code\n" +
             "where i.status in ('Đã nhập hàng', 'Hàng đang về') \n" +
             "group by  p.code ) p2 on p.code = p2.code ", nativeQuery = true)

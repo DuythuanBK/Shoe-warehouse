@@ -11,6 +11,8 @@
         [ngModelOptions]="{ updateOn: 'blur' }"
         ></d-search>
         <d-button id="primaryBtn" style="margin-left: 15px" *ngIf="!headerNewForm" (click)="newRow()" class="cursor-pointer">Create new data</d-button>
+        <d-button id="primaryBtn" *ngIf="!headerNewForm" style="margin-left: 15px" (click)="exportProducts()">Export</d-button>
+
         <div *ngIf="headerNewForm" class="edit-padding-fix">
           <da-admin-form
             [formConfig]="formConfig"
@@ -35,7 +37,7 @@
         <div class="da-list-content">
           <d-data-table #dataTable 
               [dataSource]="listData" 
-              [maxHeight]="'700px'" 
+              [maxHeight]="'800px'" 
               [scrollable]="true" 
               [tableWidthConfig]="tableWidthConfig">
             <thead dTableHead>

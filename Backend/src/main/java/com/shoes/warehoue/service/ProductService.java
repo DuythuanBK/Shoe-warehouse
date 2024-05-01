@@ -11,18 +11,25 @@ import com.shoes.warehoue.repository.ImportRepository;
 import com.shoes.warehoue.repository.ProductRepository;
 import com.shoes.warehoue.repository.StockRepository;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,13 +55,15 @@ public class ProductService {
         if(entity != null) {
             throw new AppException(new Error("Sản phẩm đã tồn tại", HttpStatus.FOUND));
         }
-        String[] images = product.getImage().split(",");
-        String extension = images[0].split("/")[1].split(";")[0];
+        String imageName = "";
+        if(product.getImage() != null) {
+            String[] images = product.getImage().split(",");
+            String extension = images[0].split("/")[1].split(";")[0];
 
-        String imageName = product.getCode() + "." + extension;
+            imageName = product.getCode() + "." + extension;
 
-        convertBase64ToPng(images[1],  "/" + imageName);
-
+            convertBase64ToPng(images[1], "/" + imageName);
+        }
         entity = ProductEntity.builder()
                 .code(product.getCode())
                 .image(imageName)
@@ -181,4 +190,39 @@ public class ProductService {
         return multipleProducts;
     }
 
+
+    public ByteArrayResource exportProducts(ProductParam param) {
+        List<ProductEntity> productEntities = new ArrayList<>();
+        productEntities = productRepository.findAll();
+
+        String[] colums = {"Id", "Product Code", "Note"};
+
+        // Create a new Workbook
+        Workbook workbook = new XSSFWorkbook();
+
+        // Create a Sheet
+        Sheet sheet = workbook.createSheet("Sheet1");
+        // Write columns
+        Row row1 = sheet.createRow(0);
+        row1.createCell(0).setCellValue(colums[0]);
+        row1.createCell(1).setCellValue(colums[1]);
+        row1.createCell(2).setCellValue(colums[2]);
+
+        for(int i = 0; i < productEntities.size(); i++) {
+            Row row = sheet.createRow(i + 1);
+            row.createCell(0).setCellValue(productEntities.get(i).getId());
+            row.createCell(1).setCellValue(productEntities.get(i).getCode());
+            row.createCell(2).setCellValue(productEntities.get(i).getNote());
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            workbook.write(outputStream);
+            workbook.close();
+        } catch (IOException e) {
+            throw new AppException( new Error("Lỗi trong qúa trình ghi file", HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+
+        return new ByteArrayResource(outputStream.toByteArray());
+    }
 }

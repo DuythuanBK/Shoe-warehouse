@@ -8,11 +8,26 @@ import { BACKEND_URL } from '../data/common';
 
 @Injectable()
 export class ProductService {
+  
   private productsUrl = `${BACKEND_URL}/products`;
   constructor(private configService: ConfigService, private http: HttpClient) {
     console.log("producturl: " + configService.getApiUrl())
   }
 
+  exportProducts(): void {
+    this.http.get(`${this.productsUrl}/export_excel`, {
+      responseType: 'blob'
+    }).subscribe(blob => {
+      this.saveFile(blob);
+    });
+  }
+
+  private saveFile(blob: Blob): void {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.download = 'products.xlsx';
+    downloadLink.click();
+  }
 
   getProducts(params: ProductParam): Observable<MultipleProduct> {
     return this.http.get<MultipleProduct>(`${this.productsUrl}?${getParamsStr(params)}`);
