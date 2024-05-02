@@ -10,6 +10,7 @@ import { BACKEND_URL } from '../data/common';
   providedIn: 'root'
 })
 export class StockService {
+  
   private url = `${BACKEND_URL}/stock`
 
   constructor(private configService: ConfigService, private http: HttpClient) {
@@ -30,4 +31,20 @@ export class StockService {
   deleteStock(stock: Stock): Observable<void> {
     return this.http.delete<void>(this.url, {"body": stock});
   }
+
+  exportStocks() {
+    this.http.get(`${this.url}/export_excel`, {
+      responseType: 'blob'
+    }).subscribe(blob => {
+      this.saveFile(blob);
+    });
+  }
+
+  private saveFile(blob: Blob): void {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.download = 'stocks.xlsx';
+    downloadLink.click();
+  }
+
 }

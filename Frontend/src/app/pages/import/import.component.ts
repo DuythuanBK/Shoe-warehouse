@@ -11,7 +11,7 @@ import { showDialogError } from 'src/app/@core/data/common';
 @Component({
   selector: 'app-import',
   templateUrl: './import.component.html',
-  styleUrls: ['./import.component.scss']
+  styleUrls: ['./import.component.scss'],
 })
 export class ImportComponent {
   editableTip = EditableTip.btn;
@@ -23,7 +23,6 @@ export class ImportComponent {
     pageSize: 5,
   };
 
-  
   listData: Import[] = [];
   isEdit: Boolean = false;
   editIdx: number = 0;
@@ -33,7 +32,7 @@ export class ImportComponent {
   formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
     items: COLUMN_CONFIG,
-    labelSize: ''
+    labelSize: '',
   };
 
   shipCodeSearch: string = '';
@@ -41,7 +40,7 @@ export class ImportComponent {
   dateSearch: string = '';
   statusSearch: string = '';
   productCodeSearch: string = '';
-  statusOptions:string[] = ["Đã nhập hàng", "Nhập kho", "Đã hủy", "Hàng đang về"];
+  statusOptions: string[] = ['Đã đặt hàng', 'Nhập kho', 'Đã hủy', 'Hàng đang về'];
 
   defaultRowData: Import = {
     id: -1,
@@ -52,16 +51,12 @@ export class ImportComponent {
     price: '',
     shipFee: '',
     status: '',
-    note: ''
+    note: '',
   };
 
-  
   tableWidthConfig: TableWidthConfig[] = TABLE_WITH_CONFIG;
 
-  constructor(
-    private importService: ImportService,
-    private dialogService: DialogService
-  ) {}
+  constructor(private importService: ImportService, private dialogService: DialogService) {}
 
   onSearch() {
     this.getList();
@@ -69,10 +64,9 @@ export class ImportComponent {
 
   onDatePickerClearAll() {
     this.dateSearch = '';
-    
   }
 
-  onClearSearch(){
+  onClearSearch() {
     this.shipCodeSearch = '';
     this.orderCodeSearch = '';
     this.dateSearch = '';
@@ -89,33 +83,31 @@ export class ImportComponent {
   }
 
   formatDate(dateStr: string): string {
-    if(dateStr === '')
-      return '';
+    if (dateStr === '') return '';
     // Parse the original date string
     const originalDate = new Date(dateStr);
-  
+
     // Extract individual components
     const day = originalDate.getDate().toString().padStart(2, '0');
     const month = (originalDate.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-based
     const year = originalDate.getFullYear();
-  
+
     // Format the new date string
     const formattedDateString = `${day}-${month}-${year}`;
-  
+
     return formattedDateString;
   }
 
-  getList(params: ImportParam = {limit: this.pager.pageSize, offset: this.pager.pageIndex - 1}) {
+  getList(params: ImportParam = { limit: this.pager.pageSize, offset: this.pager.pageIndex - 1 }) {
     params.shipCode = this.shipCodeSearch;
     params.orderCode = this.orderCodeSearch;
     params.importDate = this.formatDate(this.dateSearch);
     params.status = this.statusSearch;
     params.productCode = this.productCodeSearch;
-    this.busy = this.importService.getImports(params)
-      .subscribe((res) => {
-        this.listData = res.imports;
-        this.pager.total = res.importCount;
-      });
+    this.busy = this.importService.getImports(params).subscribe((res) => {
+      this.listData = res.imports;
+      this.pager.total = res.importCount;
+    });
   }
 
   beforeEditStart = (rowItem, field) => {
@@ -140,7 +132,7 @@ export class ImportComponent {
       price: '',
       shipFee: '',
       status: '',
-      note: ''
+      note: '',
     };
     this.isEdit = false;
     this.headerNewForm = true;
@@ -149,21 +141,25 @@ export class ImportComponent {
   quickRowAdded(e) {
     const newData = { ...e };
     newData.importDate = this.formatDate(newData.importDate);
-    if(!this.isEdit) {
+    if (!this.isEdit) {
       this.importService.addImport(newData).subscribe({
-        next: (res) => { this.getList()},
+        next: (res) => {
+          this.getList();
+        },
         error: (res) => {
-          const error = res.error.errors.body[0];
+          const error = res.error.errors.body;
           showDialogError(error, this.dialogService);
-        }
+        },
       });
     } else {
       this.importService.updateImport(newData).subscribe({
-        next: null,
+        next: (res) => {
+          this.getList();
+        },
         error: (res) => {
-          const error = res.error.errors.body[0];
+          const error = res.error.errors.body;
           showDialogError(error, this.dialogService);
-        }
+        },
       });
     }
     this.headerNewForm = false;
@@ -173,20 +169,19 @@ export class ImportComponent {
     this.headerNewForm = false;
   }
 
-
-  onPageChange (e) {
+  onPageChange(e) {
     this.pager.pageIndex = e;
-    this.getList()
+    this.getList();
   }
 
-  onSizeChange (e) {
+  onSizeChange(e) {
     this.pager.pageSize = e;
-    this.getList()
+    this.getList();
   }
 
   editRow(index) {
     let expense = this.listData[index];
-    this.defaultRowData = {...expense};
+    this.defaultRowData = { ...expense };
     this.isEdit = true;
     this.editIdx = index;
     this.headerNewForm = true;
@@ -208,8 +203,8 @@ export class ImportComponent {
           text: 'Ok',
           disabled: false,
           handler: () => {
-            this.listData.splice(index, 1);
             this.importService.deleteImport(this.listData[index]).subscribe();
+            this.listData.splice(index, 1);
             results.modalInstance.hide();
           },
         },

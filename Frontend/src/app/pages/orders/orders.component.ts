@@ -98,7 +98,7 @@ export class OrdersComponent {
     this.defaultRowData = {
       productCode: '',
       quantity: 0,
-      weight: '',
+      weight: 0,
       price: '',
       shipTime: '',
       shipService: '',
@@ -158,15 +158,21 @@ export class OrdersComponent {
           this.getList();
         },
         error: (res) => {
-          const error = res.error.errors.body[0];
-          showDialogError(error[0], this.dialogService);
-      }})
+          let error = res.error.errors.body;
+          if(error == undefined || error == '') {
+            error = 'Lỗi trong quá trình tạo';
+          } 
+          showDialogError(error, this.dialogService);
+        }})
     } else {
       this.listData.splice(this.editIdx, 1, newData);
       this.orderService.updateOrder(newData).subscribe({
         next: null,
         error: (res) => {
-          const error = res.error.errors.body[0];
+          let error = res.error.errors.body;
+          if(error == undefined || error == '') {
+            error = 'Lỗi trong quá trình sửa';
+          } 
           showDialogError(error, this.dialogService);
         }
       });

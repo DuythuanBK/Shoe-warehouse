@@ -12,7 +12,7 @@ import { showDialogError } from 'src/app/@core/data/common';
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrls: ['./products.component.scss']
+  styleUrls: ['./products.component.scss'],
 })
 export class ProductsComponent {
   userProfileForm: FormGroup;
@@ -26,7 +26,7 @@ export class ProductsComponent {
   };
 
   searchProduct: string = null;
-  
+
   listData: Product[] = [];
   headerNewForm = false;
   isEdit = false;
@@ -35,34 +35,29 @@ export class ProductsComponent {
   formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
     items: COLUMN_CONFIG,
-    labelSize: ''
+    labelSize: '',
   };
 
   defaultRowData: Product = {
     id: -1,
     code: '',
-    note: ''
+    note: '',
   };
-
 
   tableWidthConfig: TableWidthConfig[] = TABLE_WITH_CONFIG;
 
-  constructor(
-    private productService: ProductService,
-    private dialogService: DialogService,
-    private formBuilder: FormBuilder
-  ) {
+  constructor(private productService: ProductService, private dialogService: DialogService, private formBuilder: FormBuilder) {
     this.userProfileForm = this.formBuilder.group({
       code: ['', Validators.required],
       note: ['', Validators.required],
-      image: [null, Validators.required]
+      image: [null, Validators.required],
     });
   }
 
   onFileChange(event) {
     const file = (event.target as HTMLInputElement).files[0];
     this.userProfileForm.patchValue({
-      image: file
+      image: file,
     });
     this.userProfileForm.get('image').updateValueAndValidity();
   }
@@ -72,7 +67,9 @@ export class ProductsComponent {
     formData.append('code', this.userProfileForm.get('code').value);
     formData.append('note', this.userProfileForm.get('note').value);
     formData.append('image', this.userProfileForm.get('image').value);
-    this.productService.createProduct(formData).subscribe((res) => {this.getList()});
+    this.productService.createProduct(formData).subscribe((res) => {
+      this.getList();
+    });
   }
 
   onSearch(evt) {
@@ -87,12 +84,11 @@ export class ProductsComponent {
     rowItem[field] = false;
   }
 
-  getList(params: ProductParam = {limit: this.pager.pageSize, offset:this.pager.pageIndex - 1, code: this.searchProduct}) {
-    this.busy = this.productService.getProducts(params)
-      .subscribe((res) => {
-        this.pager.total = res.productsCount;
-        this.listData = [...res.products]
-      });
+  getList(params: ProductParam = { limit: this.pager.pageSize, offset: this.pager.pageIndex - 1, code: this.searchProduct }) {
+    this.busy = this.productService.getProducts(params).subscribe((res) => {
+      this.pager.total = res.productsCount;
+      this.listData = [...res.products];
+    });
   }
 
   beforeEditStart = (rowItem, field) => {
@@ -108,7 +104,7 @@ export class ProductsComponent {
   };
 
   newRow() {
-    this.defaultRowData = {  code: '', note: ''};
+    this.defaultRowData = { code: '', note: '' };
     this.isEdit = false;
     this.headerNewForm = true;
   }
@@ -118,23 +114,27 @@ export class ProductsComponent {
 
   quickRowAdded(e) {
     const newProduct: Product = { ...e };
-    
-    if(!this.isEdit) {
+
+    if (!this.isEdit) {
       this.productService.addProduct(newProduct).subscribe({
-        next: (res) => { this.getList()},
+        next: (res) => {
+          this.getList();
+        },
         error: (res) => {
-          const error = res.error.errors.body[0];
+          const error = res.error.errors.body;
           showDialogError(error, this.dialogService);
-        }
+        },
       });
     } else {
       // this.listData.splice(this.editIdx, 1, newProduct);
       this.productService.updateProduct(newProduct).subscribe({
-        next: (res) => { this.getList()},
+        next: (res) => {
+          this.getList();
+        },
         error: (res) => {
-          const error = res.error.errors.body[0];
+          const error = res.error.errors.body;
           showDialogError(error, this.dialogService);
-        }
+        },
       });
     }
     this.headerNewForm = false;
@@ -144,21 +144,21 @@ export class ProductsComponent {
     this.headerNewForm = false;
   }
 
-  onPageChange (e) {
+  onPageChange(e) {
     this.pager.pageIndex = e;
-    const params: ProductParam = {offset: this.pager.pageIndex - 1, limit: this.pager.pageSize}
-    this.getList(params)
+    const params: ProductParam = { offset: this.pager.pageIndex - 1, limit: this.pager.pageSize };
+    this.getList(params);
   }
 
-  onSizeChange (e) {
+  onSizeChange(e) {
     this.pager.pageSize = e;
-    const params: ProductParam = {offset: this.pager.pageIndex - 1, limit: this.pager.pageSize}
-    this.getList(params)
+    const params: ProductParam = { offset: this.pager.pageIndex - 1, limit: this.pager.pageSize };
+    this.getList(params);
   }
 
   editRow(index) {
     let product = this.listData[index];
-    this.defaultRowData = {...product};
+    this.defaultRowData = { ...product };
     this.isEdit = true;
     this.editIdx = index;
     this.headerNewForm = true;
@@ -197,6 +197,4 @@ export class ProductsComponent {
       ],
     });
   }
-
-  
 }

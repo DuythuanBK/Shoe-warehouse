@@ -14,11 +14,10 @@
           <d-card *ngFor="let item of listData" class="card-item">
             <d-card-header>
               <d-card-title class="large-text">{{ item.code }}</d-card-title>
-              <d-card-title><span>Kho: {{item.stockQuantity}}</span> <span style="margin-left: 100px;">Đang nhập: {{item.importQuantity}}</span></d-card-title>
-              
+              <d-card-title><p>Kho: {{item.stockQuantity ? item.stockQuantity : 0}}</p> <p >Đang nhập: {{item.importQuantity ? item.importQuantity : 0}}</p></d-card-title>
             </d-card-header>
             <d-card-content style="max-height: 500px; max-width: 300px">
-              <img src="{{imageSrc}}/{{item.image}}" style="object-fit: contain; max-height: 500px; max-width: 300px">
+              <img src="{{imageSrc}}/{{item.image}}" style="object-fit: contain; max-height: 200px; max-width: 200px">
             </d-card-content>
           </d-card>
         </div>

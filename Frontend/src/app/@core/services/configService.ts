@@ -14,7 +14,7 @@ export class ConfigService {
 
   public getApiUrl(): string {
     if(this.apiUrl == '') {
-      return 'http://localhost:8081/api';
+      return 'http://localhost:8080/api';
     }
     return this.apiUrl;
   }

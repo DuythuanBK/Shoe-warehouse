@@ -3,7 +3,7 @@ export interface Order {
   customer?: Customer;
   productCode?: string;
   quantity?: number;
-  weight?: string;
+  weight?: number;
   price?: string;
   shipTime?: string;
   shipService?: string;
@@ -20,7 +20,7 @@ export interface DisplayOrder {
   name?: string;
   productCode?: string;
   quantity?: number;
-  weight?: string;
+  weight?: number;
   price?: string;
   shipTime?: string;
   shipService?: string;

@@ -10,9 +10,10 @@ import { showDialogError } from 'src/app/@core/data/common';
 @Component({
   selector: 'app-stock',
   templateUrl: './stock.component.html',
-  styleUrls: ['./stock.component.scss']
+  styleUrls: ['./stock.component.scss'],
 })
 export class StockComponent {
+
   editableTip = EditableTip.btn;
   nameEditing: boolean;
   busy: Subscription;
@@ -21,7 +22,7 @@ export class StockComponent {
     pageIndex: 1,
     pageSize: 5,
   };
-  
+
   searchProduct: string = null;
   listData: Stock[] = [];
   isEdit: Boolean = true;
@@ -32,25 +33,25 @@ export class StockComponent {
   formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
     items: COLUMN_CONFIG,
-    labelSize: ''
+    labelSize: '',
   };
 
   defaultRowData: Stock = {
     id: -1,
     productCode: '',
-    quantity: 0
+    quantity: 0,
   };
   tableWidthConfig: TableWidthConfig[] = TABLE_WITH_CONFIG;
 
-  constructor(
-    private stockService: StockService,
-    private dialogService: DialogService
-  ) {}
+  constructor(private stockService: StockService, private dialogService: DialogService) {}
 
   ngOnInit() {
     this.getList();
   }
 
+  exportProducts() {
+    this.stockService.exportStocks();
+  }
   onSearch(evt) {
     this.getList();
   }
@@ -59,12 +60,11 @@ export class StockComponent {
     rowItem[field] = false;
   }
 
-  getList(params: StockParam = {limit: this.pager.pageSize, offset: this.pager.pageIndex - 1, code: this.searchProduct}) {
-    this.busy = this.stockService.getStock(params)
-      .subscribe((res) => {
-        this.listData = res.stocks;
-        this.pager.total = res.stockCount;
-      });
+  getList(params: StockParam = { limit: this.pager.pageSize, offset: this.pager.pageIndex - 1, code: this.searchProduct }) {
+    this.busy = this.stockService.getStock(params).subscribe((res) => {
+      this.listData = res.stocks;
+      this.pager.total = res.stockCount;
+    });
   }
 
   beforeEditStart = (rowItem, field) => {
@@ -81,30 +81,34 @@ export class StockComponent {
   };
 
   newRow() {
-    this.defaultRowData = { productCode: '', quantity: 0};
+    this.defaultRowData = { productCode: '', quantity: 0 };
     this.isEdit = false;
     this.headerNewForm = true;
   }
 
   quickRowAdded(e) {
     const newData = { ...e };
-    if(!this.isEdit) {
+    if (!this.isEdit) {
       this.stockService.addStock(newData).subscribe({
-        next: (res) => { this.getList()},
+        next: (res) => {
+          this.getList();
+        },
         error: (res) => {
-          const error = res.error.errors.body[0];
+          const error = res.error.errors.body;
           showDialogError(error, this.dialogService);
-        }
+        },
       });
     } else {
       // this.listData.splice(this.editIdx, 1, newData);
       this.stockService.updateStock(newData).subscribe({
-        next: (res) => { this.getList()},
+        next: (res) => {
+          this.getList();
+        },
         error: (res) => {
-          const error = res.error.errors.body[0];
+          const error = res.error.errors.body;
           showDialogError(error, this.dialogService);
-        }
-      });;
+        },
+      });
     }
     this.headerNewForm = false;
   }
@@ -119,19 +123,19 @@ export class StockComponent {
     }
   }
 
-  onPageChange (e) {
+  onPageChange(e) {
     this.pager.pageIndex = e;
-    this.getList()
+    this.getList();
   }
 
-  onSizeChange (e) {
+  onSizeChange(e) {
     this.pager.pageSize = e;
-    this.getList()
+    this.getList();
   }
 
   editRow(index) {
     let stock = this.listData[index];
-    this.defaultRowData = {...stock};
+    this.defaultRowData = { ...stock };
     this.isEdit = true;
     this.editIdx = index;
     this.headerNewForm = true;

@@ -45,7 +45,7 @@ export var COLUMN_CONFIG = [
   {
     label: 'Status',
     prop: 'status',
-    options: ["Đã nhập hàng", "Nhập kho", "Đã hủy", "Hàng đang về"],
+    options: ["Đã đặt hàng", "Nhập kho", "Đã hủy", "Hàng đang về"],
     type: 'select',
   },
   {

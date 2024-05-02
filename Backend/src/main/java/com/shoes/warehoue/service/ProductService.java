@@ -62,7 +62,7 @@ public class ProductService {
 
             imageName = product.getCode() + "." + extension;
 
-            convertBase64ToPng(images[1], "/" + imageName);
+            convertBase64ToPng(images[1], "./" + imageName);
         }
         entity = ProductEntity.builder()
                 .code(product.getCode())
@@ -143,7 +143,7 @@ public class ProductService {
 
         if(productEntity != null && productEntity.getImage() != null) {
             // Construct the path to the image
-            Path imagePath = Paths.get("/", productEntity.getImage());
+            Path imagePath = Paths.get("./", productEntity.getImage());
 
             // Create a resource from the file system path
             return new FileSystemResource(imagePath.toFile());
@@ -159,7 +159,7 @@ public class ProductService {
         }
         Page<ProductEntity> page;
         ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnorePaths("limit", "offset")
+                .withIgnorePaths("limit", "offset", "image", "note")
                 .withIgnoreNullValues()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
@@ -169,7 +169,7 @@ public class ProductService {
 //        if(param.getCode() != null) {
 //            page = productRepository.findByCode(param.getCode(), pageable);
 //        }else {
-            page = productRepository.findProductQuantity(example, pageable);
+            page = productRepository.findProductQuantity(param.getCode(), pageable);
 //        }
         List<ProductEntity> productEntities = page.getContent();
         List<ProductDto.ProductQuantity> productQuantities = productEntities.stream().map((e) -> {

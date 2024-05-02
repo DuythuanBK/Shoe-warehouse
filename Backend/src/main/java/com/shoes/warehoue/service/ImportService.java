@@ -38,7 +38,26 @@ public class ImportService {
         productRepository.findByCode(dto.getProductCode()).orElseThrow(
                 () -> new AppException(new Error("Mã sản phẩm không tìm thấy", HttpStatus.NOT_FOUND)));
         ImportEntity entity = mapper.map(dto, ImportEntity.class);
+        if(dto.getStatus().equals(AppConstant.ImportStatus.NHAP_KHO) && dto.getQuantity() != null) {
+            if(dto.getQuantity() < 0) {
+                throw new AppException(new Error("Số lượng không phù hợp", HttpStatus.INTERNAL_SERVER_ERROR));
+            }
+            updateStockQuantity(dto.getProductCode(), dto.getQuantity());
+        }
         importRepository.save(entity);
+    }
+
+    private void updateStockQuantity(String productCode, Long quantity) {
+        StockEntity stockEntity = stockRepository.findByProductCode(productCode).orElse(null);
+        if(stockEntity == null) {
+            stockEntity = new StockEntity();
+            stockEntity.setQuantity(quantity);
+            stockEntity.setProductCode(productCode);
+        } else {
+            Long preQuantity = stockEntity.getQuantity();
+            stockEntity.setQuantity(preQuantity + quantity);
+        }
+        stockRepository.save(stockEntity);
     }
 
     public void deleteImportInfo(ImportDto.deleteImport dto) {
@@ -54,16 +73,13 @@ public class ImportService {
         if(dto.getStatus().equals(AppConstant.ImportStatus.NHAP_KHO)
                 && !entity.getStatus().equals(AppConstant.ImportStatus.NHAP_KHO)
                 && dto.getQuantity() != null) {
-            StockEntity stockEntity = stockRepository.findByProductCode(dto.getProductCode()).orElse(null);
-            if(stockEntity == null) {
-                stockEntity = new StockEntity();
-                stockEntity.setQuantity(dto.getQuantity());
-                stockEntity.setProductCode(dto.getProductCode());
-            } else {
-                Long preQuantity = stockEntity.getQuantity();
-                stockEntity.setQuantity(preQuantity + dto.getQuantity());
-            }
-            stockRepository.save(stockEntity);
+            updateStockQuantity(dto.getProductCode(), dto.getQuantity());
+        }
+
+        if(entity.getStatus().equals(AppConstant.ImportStatus.NHAP_KHO)
+            && !dto.getStatus().equals(AppConstant.ImportStatus.NHAP_KHO)
+            && dto.getQuantity() != null)  {
+            updateStockQuantity(dto.getProductCode(), -dto.getQuantity());
         }
         mapper.map(dto, entity);
         importRepository.save(entity);

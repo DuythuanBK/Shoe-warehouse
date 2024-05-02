@@ -13,7 +13,6 @@ export class OrderService {
   private url = `${BACKEND_URL}/orders`
 
   constructor(private configService: ConfigService, private http: HttpClient) {
-    this.url = configService.getApiUrl() + "/orders";
   }
 
 

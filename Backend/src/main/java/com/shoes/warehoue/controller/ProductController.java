@@ -38,7 +38,7 @@ public class ProductController {
         productService.deleteProduct(dto);
     }
 
-    @GetMapping("/image/{imageName}")
+    @GetMapping("/images/{imageName}")
     public ResponseEntity<Resource> getImage(@PathVariable String imageName) {
         Resource resource = productService.getImage(imageName);
         return ResponseEntity.ok(resource);

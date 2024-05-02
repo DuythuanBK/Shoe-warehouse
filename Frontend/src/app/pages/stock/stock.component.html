@@ -10,7 +10,9 @@
             (searchFn)="onSearch($event)"
             [ngModelOptions]="{ updateOn: 'blur' }"
             ></d-search>
-            <d-button id="primaryBtn" style="margin-left: 15px" *ngIf="!headerNewForm" (click)="newRow()" class="cursor-pointer">Create new data</d-button>
+          <d-button id="primaryBtn" *ngIf="!headerNewForm" style="margin-left: 15px" (click)="exportProducts()">Export</d-button>
+
+            <!-- <d-button id="primaryBtn" style="margin-left: 15px" *ngIf="!headerNewForm" (click)="newRow()" class="cursor-pointer">Create new data</d-button> -->
           <div *ngIf="headerNewForm" class="edit-padding-fix">
             <da-admin-form
               [formConfig]="formConfig"
@@ -29,7 +31,6 @@
               <tr dTableRow>
                 <th dHeadCell>Product</th>
                 <th dHeadCell>Quantity</th>
-                <th dHeadCell>Actions</th>
               </tr>
             </thead>
             <tbody dTableBody>
@@ -57,10 +58,10 @@
                   >
                     <span>{{ rowItem?.quantity }}</span>
                   </td>
-                  <td>
+                  <!-- <td>
                     <d-button icon="icon-edit" bsStyle="text-dark" title="edit" (click)="editRow(rowIndex)"></d-button>
                     <d-button icon="icon-delete" bsStyle="text-dark" title="delete" (click)="deleteRow(rowIndex)"></d-button>
-                  </td>
+                  </td> -->
                 </tr>
               </ng-template>
             </tbody>

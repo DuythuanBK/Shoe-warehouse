@@ -8,11 +8,10 @@ import { Expenses } from 'src/app/@core/data/expenses';
 import { ExpensesParam } from 'src/app/@core/data/param';
 import { showDialogError } from 'src/app/@core/data/common';
 
-
 @Component({
   selector: 'app-expenses',
   templateUrl: './expenses.component.html',
-  styleUrls: ['./expenses.component.scss']
+  styleUrls: ['./expenses.component.scss'],
 })
 export class ExpensesComponent {
   editableTip = EditableTip.btn;
@@ -32,22 +31,18 @@ export class ExpensesComponent {
   formConfig: FormConfig = {
     layout: FormLayout.Horizontal,
     items: COLUMN_CONFIG,
-    labelSize: ''
+    labelSize: '',
   };
 
   defaultRowData: Expenses = {
     id: -1,
     total: '',
     date: new Date(),
-    note: ''
+    note: '',
   };
   tableWidthConfig: TableWidthConfig[] = TABLE_WITH_CONFIG;
 
-  constructor(
-    private expensesService: ExpensesService,
-    private dialogService: DialogService
-  ) {}
-  
+  constructor(private expensesService: ExpensesService, private dialogService: DialogService) {}
 
   onSearch() {
     this.getList();
@@ -58,13 +53,12 @@ export class ExpensesComponent {
   }
 
   formatDate(dateStr: string): string {
-    if(dateStr === '')
-      return '';
-    console.log(dateStr)
+    if (dateStr === '') return '';
+    console.log(dateStr);
     // Parse the original date string
     const originalDate = new Date(dateStr);
 
-    console.log(originalDate)
+    console.log(originalDate);
 
     // Extract individual components
     const day = originalDate.getDate().toString().padStart(2, '0');
@@ -85,12 +79,13 @@ export class ExpensesComponent {
     rowItem[field] = false;
   }
 
-  getList(params: ExpensesParam = {limit: this.pager.pageSize, offset: this.pager.pageIndex - 1, date: this.formatDate(this.dateSearch)}) {
-    this.busy = this.expensesService.getExpenses(params)
-      .subscribe((res) => {
-        this.listData = res.expensesList;
-        this.pager.total = res.expensesCount;
-      });
+  getList(
+    params: ExpensesParam = { limit: this.pager.pageSize, offset: this.pager.pageIndex - 1, date: this.formatDate(this.dateSearch) }
+  ) {
+    this.busy = this.expensesService.getExpenses(params).subscribe((res) => {
+      this.listData = res.expensesList;
+      this.pager.total = res.expensesCount;
+    });
   }
 
   beforeEditStart = (rowItem, field) => {
@@ -106,7 +101,7 @@ export class ExpensesComponent {
   };
 
   newRow() {
-    this.defaultRowData = { date: new Date(), total: '', note: ''};
+    this.defaultRowData = { date: new Date(), total: '', note: '' };
     this.isEdit = false;
     this.headerNewForm = true;
   }
@@ -115,23 +110,25 @@ export class ExpensesComponent {
     const newData = { ...e };
     const date = this.formatDate(newData.date);
     newData.date = date;
-    if(!this.isEdit) {
+    if (!this.isEdit) {
       this.expensesService.addExpense(newData).subscribe({
-        next: (res) => { this.getList()},
+        next: (res) => {
+          this.getList();
+        },
         error: (res) => {
-          const error = res.error.errors.body[0];
+          const error = res.error.errors.body;
           showDialogError(error, this.dialogService);
-        }
+        },
       });
     } else {
       this.listData.splice(this.editIdx, 1, newData);
       this.expensesService.updateExpense(newData).subscribe({
         next: null,
         error: (res) => {
-          const error = res.error.errors.body[0];
+          const error = res.error.errors.body;
           showDialogError(error, this.dialogService);
-        }
-      });;
+        },
+      });
     }
     this.headerNewForm = false;
   }
@@ -146,19 +143,19 @@ export class ExpensesComponent {
     }
   }
 
-  onPageChange (e) {
+  onPageChange(e) {
     this.pager.pageIndex = e;
-    this.getList()
+    this.getList();
   }
 
-  onSizeChange (e) {
+  onSizeChange(e) {
     this.pager.pageSize = e;
-    this.getList()
+    this.getList();
   }
 
   editRow(index) {
     let product = this.listData[index];
-    this.defaultRowData = {...product};
+    this.defaultRowData = { ...product };
     this.isEdit = true;
     this.editIdx = index;
     this.headerNewForm = true;
@@ -180,10 +177,9 @@ export class ExpensesComponent {
           text: 'Ok',
           disabled: false,
           handler: () => {
-            this.expensesService.deleteExpense(this.listData[index])
-              .subscribe((res) => {
-                this.getList();
-              });
+            this.expensesService.deleteExpense(this.listData[index]).subscribe((res) => {
+              this.getList();
+            });
             results.modalInstance.hide();
           },
         },

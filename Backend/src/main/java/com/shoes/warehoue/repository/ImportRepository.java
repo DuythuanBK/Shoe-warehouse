@@ -25,6 +25,6 @@ public interface ImportRepository extends JpaRepository<ImportEntity, Long> {
 
     Page<ImportEntity> findByImportDate(Date importDate, Pageable pageable);
 
-    @Query("SELECT SUM(s.quantity) FROM ImportEntity s WHERE s.productCode = :productCode and s.status in ('Hàng đang về', 'Đã nhập hàng')")
+    @Query("SELECT SUM(s.quantity) FROM ImportEntity s WHERE s.productCode = :productCode and s.status in ('Hàng đang về', 'Đã đặt hàng')")
     Long getTotalQuantityByProductCodeInImport(@Param("productCode") String productCode);
 }
