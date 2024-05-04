@@ -166,11 +166,12 @@ public class ProductService {
         ProductEntity entityMatcher = mapper.map(param, ProductEntity.class);
         // Create an Example based on the non-null fields of orderParam
         Example<ProductEntity> example = Example.of(entityMatcher, matcher);
-//        if(param.getCode() != null) {
-//            page = productRepository.findByCode(param.getCode(), pageable);
-//        }else {
-            page = productRepository.findProductQuantity(param.getCode(), pageable);
-//        }
+        if(param.getCode() != null) {
+            page = productRepository.findProductQuantityLikeCode(param.getCode(), pageable);
+
+        }else {
+            page = productRepository.findProductQuantity(pageable);
+        }
         List<ProductEntity> productEntities = page.getContent();
         List<ProductDto.ProductQuantity> productQuantities = productEntities.stream().map((e) -> {
             return mapper.map(e, ProductDto.ProductQuantity.class);
